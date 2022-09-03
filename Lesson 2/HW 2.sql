@@ -59,22 +59,12 @@ a)	Сколько уникальных PersonType существует для людей из Person.Person с LastNam
 
 /*
 c)	Найти самый минимальный вес и самый максимальный размер продукта из Production.Product.
-Ответ: min вес 2.12; max размер XL; продукт с минимальным весом и максимальным размером 2.12/44 
+Ответ: min вес 2.12; max размер XL
 */
 
 	USE AdventureWorks2017
-	SELECT MIN(Weight) AS Weight
+	SELECT MIN(Weight) AS Weight, MAX(Size) AS Size
 	FROM Production.Product
-
-	USE AdventureWorks2017
-	SELECT MAX(Size) AS Size
-	FROM Production.Product
-
-	USE AdventureWorks2017
-	SELECT TOP 1 Weight, Size
-	FROM Production.Product
-	WHERE Weight IS NOT NULL AND Size IS NOT NULL	
-	ORDER BY Weight ASC, Size DESC						-- интересно было совместить 2 условия, пока смогла только так найти :)
 
 
 /*
@@ -82,30 +72,19 @@ d)	Найти самый минимальный вес и самый максимальный размер продукта для каждой п
 */
 
 	USE AdventureWorks2017
-	SELECT ProductSubcategoryID, MIN(Weight) AS 'Weight'
+	SELECT ProductSubcategoryID, MIN(Weight) AS 'Weight', MAX(Size) AS 'Size'
 	FROM Production.Product
 	GROUP BY ProductSubcategoryID
 
-	USE AdventureWorks2017
-	SELECT ProductSubcategoryID, MAX(Size) AS 'Size'
-	FROM Production.Product
-	GROUP BY ProductSubcategoryID
-
-
+	
 /*
 e)	Найти самый минимальный вес и самый максимальный размер продукта для каждой подкатегории ProductSubcategoryID из Production.Product, где цвет продукта определен(Color).
 */
 
 	USE AdventureWorks2017
-	SELECT ProductSubcategoryID, MIN(Weight) AS 'Weight'
+	SELECT ProductSubcategoryID, MIN(Weight) AS 'Weight', MAX(Size) AS 'Size'
 	FROM Production.Product
 	WHERE Color IS NOT NULL	
 	GROUP BY ProductSubcategoryID
 
-
-	USE AdventureWorks2017
-	SELECT ProductSubcategoryID, MAX(Size) AS 'Size'
-	FROM Production.Product
-	WHERE Color IS NOT NULL	
-	GROUP BY ProductSubcategoryID
 
