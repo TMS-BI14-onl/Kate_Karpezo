@@ -80,7 +80,8 @@ f)	Изучите данные в объекте Sales.vSalesPerson. Создайте рейтинг cреди продавцов
 Ответ: YTD best seller Linds Mitchel; LY - Ranjit Varkey Chudukatil
 */
 	
-	SELECT BusinessEntityID, FirstName, LastName, JobTitle, City,SalesYTD, SalesLastYear,
+	SELECT CONCAT( UPPER(LEFT(LastName,3)), 'login', ISNULL(TerritoryGroup,'')) AS 'Login',
+	BusinessEntityID, FirstName, LastName, JobTitle, City,SalesYTD, SalesLastYear,
 	DENSE_RANK () OVER (ORDER BY SalesYTD DESC) AS 'Best Seller',
 	DENSE_RANK () OVER (ORDER BY SalesLastYear DESC) AS 'Best Seller LY'
 	FROM Sales.vSalesPerson
