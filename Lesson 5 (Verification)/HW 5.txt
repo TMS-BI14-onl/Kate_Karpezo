@@ -1,0 +1,97 @@
+
+/*
+6.	¬ базе данных AdventureWorks2017 создать таблицу Patients дл€ ведени€ наблюдений за температурой пациентов больницы. “аблица должна содержать пол€:
+ID Ц числовое поле. јвто заполн€етс€.
+FirstName Ц им€ пациента.
+LastName Ц фамили€ пациента.
+SSN Ц уникальный идентификатор пациента.
+Email Ц электронна€ почта пациента. ‘ормируетс€ по следующему правилу: перва€ больша€ буква FirstName + маленькие 3 буквы LastName + @mail.com (например, Akli@mail.com). ѕолезна€ ссылка здесь. 
+Temp Ц температура пациента.
+CreatedDate Ч дата измерений. 
+*/
+
+	USE AdventureWorks2017
+	CREATE TABLE Patients
+	(
+		ID			INT IDENTITY(1,1),
+		FirstName	NVARCHAR(100),
+		LastName	NVARCHAR(100),
+		SSN			UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
+		Email		VARCHAR(100),
+		Temp		FLOAT,
+		CreatedDate DATE
+		)
+
+--7.	ƒобавить в таблицу несколько произвольных записей. 
+
+
+	INSERT INTO Patients
+	VALUES 	
+	(N'Denis', N'Savenco', NEWID(), 'den@mail.ru', 36.2, '1980-04-03' ),
+	(N'Anna', N'Smirnova', NEWID(), 'anna@mail.ru', 37.1, '1995-05-09'),
+	(N'Pavel', N'Brovko', NEWID(), 'p17@mail.ru', 36.4, '1975-10-21')
+
+
+	SELECT * FROM Patients
+
+
+/*	
+8.	ƒобавить поле TempType со следующими значени€ми С< 37∞CТ,  С> 37∞CТ на основе значений из пол€ Temp ( используйте ALTER TABLE 
+ADD column AS ). ѕосмотрите на данные, которые получились.
+*/
+
+	ALTER TABLE Patients
+	ADD TempType AS   IIF (Temp < 37, '< 37∞C', '> 37∞C')
+
+	
+	SELECT * FROM Patients
+
+--9.	—оздать представление Patients_v, показывающее температуру в градусах ‘аренгейта (∞F = ∞Cx9/5 + 32)
+
+
+	CREATE VIEW Patients_v
+	AS
+	SELECT *, Temp*9/5 + 32 AS Temp_F
+	FROM Patients
+
+
+	SELECT * FROM Patients_v
+
+--10.	—оздать функцию, котора€ возвращает температуру в градусах ‘аренгейта, при подаче на вход градусы в ÷ельси€х.
+
+	CREATE FUNCTION udfTemp_F
+	(
+		@Temp_C DEC(10,1)	
+	)
+	RETURNS DEC(10,2)
+	AS 
+	BEGIN
+		RETURN @Temp_C*9/5 + 32;
+	END;
+
+	SELECT dbo.udfTemp_F(36.2) Temp_F
+
+
+--11.	ѕерепишите решение задачи g из прошлого дз с использованием переменной, максимально упроща€ select.
+
+
+	DECLARE @Date DATE
+	SET
+	@Date = DATEADD(mm, DATEDIFF(MM, 0, GETDATE()), 0)
+
+	DECLARE @Date1 INT
+	SET
+	@Date1 = DATEPART(
+						WEEKDAY, 
+						DATEADD(day, 1, EOMONTH(DATEADD(month, -1, GETDATE())))
+						)		 
+
+	SELECT  
+	--MONTH(GETDATE()) as the_month,
+	CASE
+		WHEN @Date1  = 6 
+		THEN FORMAT( DATEADD (d, 2, @Date), 'yyyy-MM-dd')
+		WHEN @Date1   = 7 
+		THEN FORMAT(DATEADD (d, 1, @Date),'yyyy-MM-dd')
+    ELSE FORMAT ( @Date, 'yyyy-MM-dd')
+	END as first_weekday
