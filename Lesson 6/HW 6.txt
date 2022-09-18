@@ -1,0 +1,39 @@
+/*
+2.	Рассмотрите новый объект базы данных – процедура. Какие процедуры есть в нашей базе данных AdventureWorks2017? 
+Ответ: 10 процедур 
+[dbo].[uspGetBillOfMaterials]
+[dbo].[uspGetEmployeeManagers]
+[dbo].[uspGetManagerEmployees]
+[dbo].[uspGetWhereUsedProductID]
+[dbo].[uspLogError]
+[dbo].[uspPrintError]
+[dbo].[uspSearchCandidateResumes]
+[HumanResources].[uspUpdateEmployeeHireInfo]
+[HumanResources].[uspUpdateEmployeeLogin]
+[HumanResources].[uspUpdateEmployeePersonalInfo]
+
+*/
+
+/*
+3.	Создайте объект с параметрами для обновления значения NationalIDNumber в таблице HumanResources.Employee для указанного BusinessEntityID. 
+Т.е. объекту будет подаваться 2 значения: BusinessEntityID (для кого изменяем данные) и NationalIDNumber (на какое значение изменяем).
+С помощью данного объекта попробуйте заменить NationalIDNumber на 879341111 для BusinessEntityID= 15.
+*/
+
+
+	CREATE PROCEDURE  spHumanResourcesEmployeeTest
+	@BusinessEntityID	INT,
+	@NationalIDNumber	INT
+	AS
+	UPDATE HumanResources.Employee
+	SET NationalIDNumber = @NationalIDNumber
+	WHERE BusinessEntityID = @BusinessEntityID
+
+	EXECUTE spHumanResourcesEmployeeTest
+	@BusinessEntityID = 15, @NationalIDNumber = 879341111
+
+
+	SELECT NationalIDNumber, BusinessEntityID
+	FROM HumanResources.Employee
+	WHERE BusinessEntityID = 15
+
