@@ -1,0 +1,101 @@
+/*
+
+--Задачи 
+1) Найдите людей и их номера телефонов, код города которых начинается на  4 и заканчивается на 5.
+( таблицы Person.PersonPhone, Person.Person) 
+
+*/
+
+
+	USE AdventureWorks2017
+	SELECT FirstName, LastName, PhoneNumber
+	FROM Person.Person P 
+	LEFT JOIN Person.PersonPhone Ph
+	ON P.BusinessEntityID = Ph.BusinessEntityID
+	WHERE PhoneNumber LIKE '4_5%'
+	ORDER BY PhoneNumber
+
+
+
+
+/*
+2) Отнести каждого человека из [HumanResources].[Employee] в свою возрастную категорию:
+Adolescence: 17-20
+Adults: 21-59
+Elderly: 60-75
+Senile: 76-90
+*/
+
+	USE AdventureWorks2017
+	SELECT  DATEDIFF(YEAR, BirthDate, GETDATE ()) AS Age, 
+	CASE 
+		WHEN DATEDIFF(YEAR, BirthDate, GETDATE ()) BETWEEN 17 AND 20 THEN 'Adolescence'
+		WHEN DATEDIFF(YEAR, BirthDate, GETDATE ()) BETWEEN 21 AND 59 THEN 'Adults'
+		WHEN DATEDIFF(YEAR, BirthDate, GETDATE ()) BETWEEN 60 AND 75 THEN 'Elderly'
+		WHEN DATEDIFF(YEAR, BirthDate, GETDATE ()) BETWEEN 76 AND 90 THEN 'Senile'
+	END AS Category
+	FROM [HumanResources].[Employee]
+	ORDER BY Age
+
+	
+
+
+
+--3) Вывести самый дорогой продукт для каждого цвета из [Production].[Product]
+
+
+
+	SELECT Name, Color, StandardCost
+	FROM (
+		SELECT Name, Color, StandardCost, MAX(StandardCost) OVER (PARTITION BY Color) as max_cost
+		FROM Production.Product) AS T
+	WHERE StandardCost = max_cost
+	ORDER BY Color
+
+
+
+/*
+4)
+Темы:
+
+1  Библиотека
+2  Поликлиника
+3  Школа
+4  Автосалон
+5  Вокзал
+6  Продуктовый магазин
+7  Банк
+8  Ресторан
+9  База МВД (преступления)
+10 Зоопарк
+11 Кинопрокат
+12 Музей
+13 IT-компания
+14 Туристическое агенство
+15 Аптека
+16 Медицинская лаборатория
+17 ГАИ
+18 Гостиница
+19 Автобусный парк
+20 Больница
+
+Требования:
+7 сущностей + придумать 2 задачи
+
+1  Библиотека
+
+автор (ID_автора, ФИО, дата рождения, адрес, тел, e-mail)
+книги (ID_книги, название, год выпуска, жанр, цена)
+продавец (ID_продавца, название, адрес, тел)
+ТТ (ID ТТ, ID_продавца, адрес, тип ТТ)
+издательство (ID_изд, название, адрес, тел)
+продажи (ID, ID_книги, ID ТТ, ID_покупателя, ID_изд, дата, скидка, стоимость)
+покупатели (ID_покупателя, ФИО, дата рождения, адрес, тел, e-mail)
+
+1. Какие ТТ продавали больше всего книг в месяц
+2. Определить возрастные группы покупателей, ср кол-во их покупок в месяц
+
+
+*/
+
+
