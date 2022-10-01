@@ -1,0 +1,42 @@
+/*
+Дана таблица людей People. Поля: ID, FirstName, ParentName, LastName,  ID_Father, ID_Mother.
+Для всех Дмитриев выведите их ФИО и ФИО их отцов.
+
+*/
+
+	CREATE TABLE People1
+	(
+		ID				INT, 
+		FirstName		NVARCHAR(100), 
+		LastName		NVARCHAR(100), 
+		ParentName	    NVARCHAR(100),
+		ID_Father		INT, 
+		ID_Mother		INT
+
+	)
+
+	GO
+
+	INSERT INTO People1 (ID, FirstName, LastName, ParentName, ID_Father, ID_Mother)
+	VALUES
+		(1, N'Дмитрий',N'Иванов',N'Иванович', 2, 3),
+		(2, N'Иван',N'Иванов',N'Степанович', null,null),
+		(3, N'Ольга',N'Иванова',N'Викторовна', null,null),
+		(4, N'Дмитрий',N'Сидоров',N'Петрович', 6, 5),
+		(5, N'Анна',N'Сидорова',N'Ивановна', null,null),
+		(6, N'Петр',N'Сидоров',N'Андреевич', null,null),
+		(7, N'Егор',N'Сидоров',N'Петрович', 6, 5)
+
+
+	SELECT *
+	FROM People1 
+	
+
+		SELECT a.FirstName,a.LastName, b.FirstName AS FatherName,b.LastName AS FatherLastName
+		FROM People1 a
+		JOIN People1 b ON a.ID_Father = b.id
+		WHERE a.FirstName = N'Дмитрий'
+
+
+	DROP TABLE People1
+
