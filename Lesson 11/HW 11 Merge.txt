@@ -1,0 +1,36 @@
+﻿	
+	CREATE TABLE Test 
+	(
+	Function_name VARCHAR (50),
+	Function_count INT
+	)
+
+		
+	MERGE INTO Test target
+	USING 
+	(
+	SELECT DISTINCT (Function_name), COUNT (1) AS Function_count
+	FROM
+	(
+	SELECT Function_name, Students
+	FROM
+	(
+	SELECT *
+	FROM [dbo].[data_for_merge]
+	) t
+	UNPIVOT  
+		(Function_name FOR Students IN
+		(Alex, Barbara, Chris, Donna, Elton, Fred, George, Harry, Irys)
+		) AS unpvt
+	) T
+	WHERE Function_name IS NOT NULL AND Function_name != ''
+	GROUP BY Function_name ) source
+	ON target.Function_name = source.Function_name
+	WHEN NOT MATCHED BY TARGET 
+		THEN INSERT (Function_name, Function_count)
+		VALUES (source.Function_name, source.Function_count);
+	
+	SELECT *
+	FROM Test
+
+	--DROP TABLE Test
