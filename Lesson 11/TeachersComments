@@ -9,5 +9,12 @@ WHEN MATCHED
 WHEN NOT MATCHED AND Barbara IS NOT NULL
 	THEN INSERT (function_name, function_count)
 	VALUES (Barbara, 1);
+	
+Test:
+
+2
+-1
+We don't need a subquery to add age category - all can be done in one query.
 
 Mark: 9
+Test mark: 9	
