@@ -1,0 +1,20 @@
+Well done!
+
+Wow, what a solution! :)))
+It would be better though to splve it with multiple simple merges, like:
+MERGE INTO res t
+USING data_for_merge s ON s.Barbara=t.function_name
+WHEN MATCHED 
+	THEN UPDATE SET function_count=function_count+1
+WHEN NOT MATCHED AND Barbara IS NOT NULL
+	THEN INSERT (function_name, function_count)
+	VALUES (Barbara, 1);
+	
+Test:
+
+2
+-1
+We don't need a subquery to add age category - all can be done in one query.
+
+Mark: 9
+Test mark: 9	
