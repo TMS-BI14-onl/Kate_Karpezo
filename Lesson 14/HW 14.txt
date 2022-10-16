@@ -1,0 +1,22 @@
+﻿
+
+CREATE VIEW TOP_50_Sellers AS
+SELECT TOP 50 WITH TIES *
+ FROM
+(
+SELECT [customer_name]
+      ,[date]
+	  , COUNT (1) AS cnt
+	  ,CASE
+		WHEN COUNT (1) <5 THEN 1
+		WHEN COUNT (1) >=5 AND COUNT (1) <10 THEN 2
+		WHEN COUNT (1) >=10 THEN 3
+END AS Rating
+  FROM [BD_software2022].[dbo].[fct_sales] s JOIN [dbo].[dim_client] cl 
+  ON s.ID_client = cl.ID_client
+ GROUP BY [customer_name], [date]
+ ) t
+  ORDER BY cnt DESC
+
+  SELECT *
+  FROM TOP_50_Sellers
