@@ -1,0 +1,90 @@
+﻿-- 1. Найти ProductSubcategoryID из Production.Product, где мин вес такого ProductSubcategoryID больше 150. 
+
+	SELECT ProductSubcategoryID, MIN (Weight) AS Weight
+	FROM Production.Product
+	WHERE Weight IS NOT NULL AND ProductSubcategoryID IS NOT NULL
+	GROUP BY ProductSubcategoryID
+	HAVING MIN (Weight) > 150
+	ORDER BY Weight
+	
+
+-- 2. Найти самый дорогой продукт (поле StandardCost) из Production.Product. (4 способа)
+
+--1
+
+	SELECT TOP 1 WITH TIES Name, StandardCost
+	FROM Production.Product
+	ORDER BY StandardCost DESC
+	
+--2
+
+	SELECT Name, StandardCost
+	FROM Production.Product
+	WHERE StandardCost = 
+	(
+	SELECT MAX(StandardCost) as max_cost
+							FROM Production.Product
+	)
+
+--3
+
+	SELECT Name, StandardCost
+	FROM
+	(SELECT Name, StandardCost, MAX(StandardCost) OVER () as max_cost
+	FROM Production.Product) t
+	WHERE StandardCost = max_cost
+	
+--4
+
+	SELECT Name, StandardCost
+	FROM
+	(
+	SELECT Name, StandardCost, RANK() OVER (ORDER BY StandardCost DESC) as rnk
+	FROM Production.Product
+	) t
+	WHERE rnk=1
+
+
+ /*
+ 3. Найти магазины, в которых за последний год не было куплено ни одного продукта. (схема GROUP1)
+
+
+ SELECT Name, Adress, SUM (Quantity) AS qnt
+ FROM Store_dim st
+ LEFT JOIN Sale_fct s ON st.id_store=s.id_store
+ GROUP BY Name, Adress
+ HAVING YEAR (OrderDate) = YEAR (GETDATE()) AND SUM (Quantity)  IS NULL
+
+
+ 4. Найти для каждого продавца кол-во продаж за последние 15 лет.  (схема GROUP3)
+ 
+	SELECT Name, Last_Name, SUM (Amount) AS qnt
+	FROM Sales_fct s
+	JOIN Seller_dim ss ON s.SellerID=ss.SellerID
+	GROUP BY Name, Last_Name
+	WHERE DATEDIFF(year, Date, GETDATE())<=15
+
+5. 
+Users (
+    id bigint NOT NULL,
+    email varchar(255) NOT NULL
+);
+
+Notifications (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    category varchar(100),
+    is_read boolean DEFAULT false
+);
+
+Найти список категорий для пользователя alex@gmail.com, в которых более 50 непрочитанных нотификаций
+
+	SELECT category
+	FROM Notifications n
+	JOIN Users u ON n.user_id=u.id
+	WHERE email=alex@gmail.com AND is_read = FALSE
+	GROUP BY category
+	HAVING COUNT (1) > 50
+	ORDER BY category
+
+*/
